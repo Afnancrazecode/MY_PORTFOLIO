@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { HiArrowRight, HiMail } from 'react-icons/hi'
+import Magnetic from './Magnetic'
 
 function FloatingParticles() {
   const canvasRef = useRef(null)
@@ -21,6 +22,20 @@ function FloatingParticles() {
     window.addEventListener('resize', resize)
 
     const colors = ['rgba(0,212,255,', 'rgba(123,47,255,', 'rgba(212,175,55,']
+    const mouse = { x: null, y: null }
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect()
+      mouse.x = e.clientX - rect.left
+      mouse.y = e.clientY - rect.top
+    }
+    const handleMouseLeave = () => {
+      mouse.x = null
+      mouse.y = null
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseleave', handleMouseLeave)
 
     for (let i = 0; i < 50; i++) {
       particles.push({
@@ -31,6 +46,8 @@ function FloatingParticles() {
         r: Math.random() * 2 + 1,
         color: colors[Math.floor(Math.random() * colors.length)],
         alpha: Math.random() * 0.3 + 0.1,
+        baseX: Math.random() * canvas.offsetWidth,
+        baseY: Math.random() * canvas.offsetHeight,
       })
     }
 
@@ -56,6 +73,22 @@ function FloatingParticles() {
 
       // Draw particles
       particles.forEach((p) => {
+        // Mouse interaction
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = mouse.x - p.x
+          const dy = mouse.y - p.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const force = (100 - dist) / 100 // interaction radius 100
+          
+          if (dist < 100) {
+            const angle = Math.atan2(dy, dx)
+            const tx = p.x - Math.cos(angle) * force * 2
+            const ty = p.y - Math.sin(angle) * force * 2
+            p.x = tx
+            p.y = ty
+          }
+        }
+
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fillStyle = p.color + p.alpha + ')'
@@ -75,6 +108,8 @@ function FloatingParticles() {
     return () => {
       cancelAnimationFrame(animationId)
       window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [])
 
@@ -201,14 +236,18 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.9 }}
           style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}
         >
-          <a href="#projects" className="btn-primary">
-            <span>View Projects</span>
-            <HiArrowRight />
-          </a>
-          <a href="#contact" className="btn-outline">
-            <HiMail />
-            <span>Connect With Me</span>
-          </a>
+          <Magnetic strength={0.4}>
+            <a href="#projects" className="btn-primary">
+              <span>View Projects</span>
+              <HiArrowRight />
+            </a>
+          </Magnetic>
+          <Magnetic strength={0.4}>
+            <a href="#contact" className="btn-outline">
+              <HiMail />
+              <span>Connect With Me</span>
+            </a>
+          </Magnetic>
         </motion.div>
 
         {/* Bottom stats bar */}

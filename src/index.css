@@ -50,6 +50,31 @@ body {
   color: #fff;
 }
 
+/* ===== CINEMATIC TEXTURE ===== */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  mix-blend-mode: overlay;
+}
+
+.light-leak {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, var(--color-neon-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.15;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }

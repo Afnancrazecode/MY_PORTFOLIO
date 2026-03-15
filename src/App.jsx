@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import LoadingScreen from './components/LoadingScreen'
 import CursorGlow from './components/CursorGlow'
 import Navbar from './components/Navbar'
@@ -46,6 +46,22 @@ function App() {
             <Contact />
           </main>
           <Footer />
+
+          {/* V2: Premium Texture Overlays */}
+          <div className="grain-overlay" />
+          <motion.div 
+            className="light-leak"
+            animate={{
+              x: [0, 80, -40, 0],
+              y: [0, -60, 30, 0],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{ top: '20%', left: '10%' }}
+          />
         </>
       )}
     </>
